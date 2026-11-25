@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>애플픽 ApplePick 발표자료</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+  @page { size: 1920px 1080px; margin: 0; }
+  :root {
+    --text: #16181d; --sub: #5b6170; --faint: #9aa0ad; --line: #e7e9f0;
+    --bg: #f6f7fb; --primary: #5b5bd6; --primary2: #8e4ec6; --soft: #eeedfd;
+    --accent: #ff6b5b; --good: #1f9d6b; --warn: #e5484d;
+    --grad: linear-gradient(135deg, #5b5bd6 0%, #8e4ec6 100%);
+    --dark: linear-gradient(135deg, #1b1d3a 0%, #2b2363 55%, #3b2a7a 100%);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: 'Pretendard Variable', Pretendard, 'Malgun Gothic', sans-serif; color: var(--text); word-break: keep-all; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .slide { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: var(--bg); padding: 90px 110px 80px; page-break-after: always; display: flex; flex-direction: column; }
+  .slide:last-child { page-break-after: auto; }
+  .slide.dark { background: var(--dark); color: #fff; }
+  .kicker { font-size: 26px; font-weight: 700; color: var(--primary); letter-spacing: .02em; margin-bottom: 14px; }
+  .dark .kicker { color: #b8b3ff; }
+  h1 { font-size: 64px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 18px; line-height: 1.2; }
+  h2 { font-size: 34px; font-weight: 800; margin: 0 0 14px; letter-spacing: -0.02em; }
+  p, li { font-size: 28px; line-height: 1.6; }
+  .lead { font-size: 32px; color: var(--sub); margin: 0 0 40px; line-height: 1.5; }
+  .dark .lead { color: rgba(255,255,255,.78); }
+  .footer { position: absolute; left: 110px; right: 110px; bottom: 34px; display: flex; justify-content: space-between; font-size: 20px; color: var(--faint); }
+  .dark .footer { color: rgba(255,255,255,.45); }
+  .grid { display: grid; gap: 32px; flex: none; }
+  .grid.fill { flex: 1; min-height: 0; }
+  .g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); }
+  .card { background: #fff; border-radius: 28px; padding: 48px 52px; box-shadow: 0 2px 4px rgba(22,24,29,.04), 0 10px 30px rgba(22,24,29,.07); }
+  .card h2 { font-size: 40px; margin-bottom: 18px; }
+  .card p, .card li { font-size: 30px; color: var(--sub); margin: 0; line-height: 1.6; }
+  .card ul { margin: 0; padding-left: 30px; }
+  .card li + li { margin-top: 10px; }
+  .icon { font-size: 68px; margin-bottom: 20px; display: block; }
+  .pill { display: inline-block; padding: 8px 18px; border-radius: 999px; background: var(--soft); color: var(--primary); font-size: 25px; font-weight: 700; margin: 0 8px 8px 0; }
+  .pill.warn { background: #ffe9e9; color: var(--warn); } .pill.good { background: #e5f6ee; color: var(--good); } .pill.gray { background: #eef0f5; color: var(--sub); }
+  .shot { border-radius: 22px; overflow: hidden; box-shadow: 0 20px 60px rgba(22,24,29,.18); border: 1px solid var(--line); background: #fff; }
+  .shot img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .caption { font-size: 24px; line-height: 1.6; color: var(--sub); margin-top: 14px; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; background: #fff; border-radius: 22px; overflow: hidden; box-shadow: 0 10px 30px rgba(22,24,29,.07); }
+  th, td { text-align: left; padding: 22px 30px; font-size: 27px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #f1f1fb; color: var(--primary); font-weight: 800; font-size: 24px; }
+  tr:last-child td { border-bottom: 0; }
+  td b { color: var(--text); }
+  td { color: var(--sub); }
+  .num { font-size: 72px; font-weight: 800; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1.1; }
+  .flow { display: flex; align-items: center; gap: 18px; }
+  .node { flex: 1; background: #fff; border-radius: 22px; padding: 34px 26px; text-align: center; box-shadow: 0 10px 30px rgba(22,24,29,.08); border: 2px solid transparent; }
+  .node b { display: block; font-size: 32px; margin-bottom: 8px; }
+  .node span { font-size: 24px; color: var(--sub); line-height: 1.45; }
+  .node.hl { border-color: var(--primary); background: linear-gradient(180deg,#fff, var(--soft)); }
+  .arrow { font-size: 40px; color: var(--primary); font-weight: 800; }
+  .persona { display: flex; gap: 28px; align-items: flex-start; }
+  .avatar { flex-shrink: 0; width: 110px; height: 110px; border-radius: 30px; display: grid; place-items: center; font-size: 60px; background: var(--soft); }
+  .q { background: #f6f7fb; border-left: 6px solid var(--primary); border-radius: 14px; padding: 20px 26px; font-size: 28px; color: var(--sub); margin-top: 18px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<!-- 1. 표지 -->
+<section class="slide dark" style="justify-content:center;">
+  <div style="position:absolute; right:-120px; top:-120px; width:820px; height:820px; border-radius:50%; background: radial-gradient(circle, rgba(142,78,198,.55), transparent 65%);"></div>
+  <div style="position:absolute; left:-200px; bottom:-260px; width:700px; height:700px; border-radius:50%; background: radial-gradient(circle, rgba(255,107,91,.3), transparent 65%);"></div>
+  <div style="display:flex; align-items:center; gap:22px; margin-bottom:40px;">
+    <div style="width:96px;height:96px;border-radius:28px;background:var(--grad);display:grid;place-items:center;font-size:58px;">🍎</div>
+    <div style="font-size:44px;font-weight:800;">ApplePick <span style="font-size:26px;padding:6px 14px;border-radius:10px;background:rgba(255,255,255,.14);margin-left:8px;">애플픽</span></div>
+  </div>
+  <h1 style="font-size:88px; line-height:1.15;">흩어진 중고 애플 매물,<br/><span style="background:linear-gradient(90deg,#b8b3ff,#ff9e8f);-webkit-background-clip:text;background-clip:text;color:transparent;">한 번에 찾고 AI에게 묻다</span></h1>
+  <p class="lead" style="font-size:34px; margin-top:20px;">중고 마켓 통합 검색 · 시세 분석 · AI 거래 도우미</p>
+  <div style="margin-top:30px;">
+    <span class="pill" style="background:rgba(255,255,255,.12);color:#fff;">LangGraph</span>
+    <span class="pill" style="background:rgba(255,255,255,.12);color:#fff;">LangChain</span>
+    <span class="pill" style="background:rgba(255,255,255,.12);color:#fff;">RAG</span>
+    <span class="pill" style="background:rgba(255,255,255,.12);color:#fff;">웹 검색</span>
+    <span class="pill" style="background:rgba(255,255,255,.12);color:#fff;">자체 Tools 6종</span>
+  </div>
+  <div class="footer"><span>[팀명] · [발표자]</span><span>2026</span></div>
+</section>
+
+<!-- 2. 문제 인식 -->
+<section class="slide">
+  <div class="kicker">01 · 문제 인식</div>
+  <h1>중고 애플 제품, 사는 사람도 파는 사람도 불편하다</h1>
+  <p class="lead">플랫폼이 나뉘어 있고, 가격 기준이 없고, 사기 위험이 크다</p>
+  <div class="grid g3">
+    <div class="card"><span class="icon">🧩</span><h2>플랫폼 파편화</h2>
+      <p>번개장터·당근·중고나라 등 여러 앱을 일일이 검색해야 한다. 번개장터에서 '맥북'만 검색해도 매물이 <b style="color:var(--text)">약 3,700건</b>이다.</p>
+      <p class="caption">※ 2026.11.25 직접 측정</p></div>
+    <div class="card"><span class="icon">💸</span><h2>시세 불투명</h2>
+      <p>같은 모델도 용량·상태·배터리에 따라 가격이 제각각이고, 부품·미끼 매물이 섞여 있어 적정가를 알기 어렵다.</p></div>
+    <div class="card"><span class="icon">🚨</span><h2>사기 위험</h2>
+      <p>시세보다 지나치게 싼 가격, 선입금 요구, 외부 메신저 유도 같은 전형적인 수법을 초보자는 알아채기 어렵다.</p></div>
+  </div>
+  <div class="footer"><span>ApplePick</span><span>2</span></div>
+</section>
+
+<!-- 3. 사용자 니즈 -->
+<section class="slide">
+  <div class="kicker">02 · 사용자 니즈 분석</div>
+  <h1>누구를 위한 서비스인가</h1>
+  <p class="lead">가상 페르소나로 구매자·판매자의 니즈를 도출했습니다</p>
+  <div class="grid g2">
+    <div class="card">
+      <div class="persona"><div class="avatar">👩‍🎓</div><div>
+        <h2>민지 · 23세 · 공대 4학년 (구매자)</h2>
+        <p>졸업 전에 아이폰을 바꾸고 싶지만 예산은 90만원. 중고 거래 경험이 거의 없다.</p></div></div>
+      <div class="q">"앱 세 개를 번갈아 보는데, 이 가격이 싼 건지 사기인 건지 모르겠어요."</div>
+      <div style="margin-top:22px;"><span class="pill">예산 안의 매물 한눈에</span><span class="pill">적정가 판단</span><span class="pill warn">사기 여부 확인</span><span class="pill">구매 체크리스트</span></div>
+    </div>
+    <div class="card">
+      <div class="persona"><div class="avatar">👨‍💻</div><div>
+        <h2>현승 · 32세 · 앱 개발자 (판매자)</h2>
+        <p>새 맥북을 사면서 쓰던 맥북 에어를 팔려 한다. 언제, 얼마에 팔아야 할지 고민이다.</p></div></div>
+      <div class="q">"요즘 시세가 내려가는 중인지, 지금 파는 게 나은지 알고 싶어요."</div>
+      <div style="margin-top:22px;"><span class="pill">현재 시세·최저가</span><span class="pill">4주 가격 추이</span><span class="pill">출시가 대비 비교</span><span class="pill good">가격 알림</span></div>
+    </div>
+  </div>
+  <div class="footer"><span>ApplePick</span><span>3</span></div>
+</section>
+
+<!-- 4. 솔루션 -->
+<section class="slide">
+  <div class="kicker">03 · 솔루션</div>
+  <h1>애플픽이 하는 일</h1>
+  <p class="lead">여러 마켓의 매물을 모으고, 시세를 계산하고, AI가 거래를 도와줍니다</p>
+  <div class="grid g3">
+    <div class="card"><span class="icon">🔎</span><h2>통합 검색</h2>
+      <ul><li>마켓 매물을 주기적으로 수집</li><li>모델별 정확한 분류 (15 / 15 Pro / 15 Pro Max 구분)</li><li>케이스·부품·매입 글 자동 제외</li></ul></div>
+    <div class="card"><span class="icon">📊</span><h2>시세 · 추이</h2>
+      <ul><li>최근 7일 평균가·최저가</li><li>z-score로 허위·미끼 가격 제거</li><li>4주 주간 평균 그래프</li><li>인기 검색 모델 · 조회수 상위 매물</li></ul></div>
+    <div class="card" style="background:var(--grad);color:#fff;"><span class="icon">✨</span><h2>AI 거래 도우미</h2>
+      <ul style="color:rgba(255,255,255,.9)"><li style="color:rgba(255,255,255,.9)">자연어로 매물 검색·시세 질문</li><li style="color:rgba(255,255,255,.9)">가격 수준 분류 + 사기 신호 탐지</li><li style="color:rgba(255,255,255,.9)">구매 가이드(RAG) · 최신 정보(웹)</li><li style="color:rgba(255,255,255,.9)">음성 질문 · 가격 알림 등록</li></ul></div>
+  </div>
+  <div class="footer"><span>ApplePick</span><span>4</span></div>
+</section>
+
+<!-- 5. 서비스 화면 -->
+<section class="slide">
+  <div class="kicker">04 · 서비스 화면</div>
+  <h1>웹으로 바로 쓰는 통합 검색</h1>
+  <div class="grid g2 fill" style="margin-top:20px;">
+    <div><div class="shot" style="height:700px;"><img src="img/main.png" /></div><div class="caption">메인 · 카테고리 선택</div></div>
+    <div><div class="shot" style="height:700px;"><img src="img/search.png" /></div><div class="caption">모델 선택 → 시세 요약 카드 + 매물 카드 (마켓 표시)</div></div>
+  </div>
+  <div class="footer"><span>ApplePick</span><span>5</span></div>
+</section>
+
+<!-- 6. AI 화면 -->
+<section class="slide">
+  <div class="kicker">05 · AI 어시스턴트</div>
+  <div style="display:grid; grid-template-columns: 1.55fr 1fr; gap:50px; flex:1; min-height:0;">
+    <div class="shot" style="height:860px;"><img src="img/chat_top.png" style="object-position: 100% 0;" /></div>
+    <div style="display:flex; flex-direction:column; justify-content:center;">
+      <h1 style="font-size:56px;">질문 하나에<br/>도구가 알아서 이어진다</h1>
+      <p class="lead" style="font-size:28px;">"아이폰 15 프로 90만원 이하 매물 찾아줘"</p>
+      <div class="card" style="padding:30px 34px;">
+        <p style="margin-bottom:12px;"><span class="pill">🧭 의도: 매물 찾기</span><span class="pill gray">예산 900,000원</span></p>
+        <p>① 🔎 상품 찾기 → 정확한 모델 키<br/>② 🛒 매물 검색 → 예산 이하 실제 매물<br/>③ 📊 시세 분석 → 평균·최저가·추이</p>
+        <p style="margin-top:14px;color:var(--text);font-weight:700;">실행 과정이 칩으로, 결과가 카드로 보입니다</p>
+      </div>
+      <p class="caption">실제 OpenAI 응답 화면 (gpt-5.4-mini, 약 10~15초)</p>
+    </div>
+  </div>
+  <div class="footer"><span>ApplePick</span><span>6</span></div>
+</section>
+
+<!-- 7. 거래 평가 & 웹 검색 -->
+<section class="slide">
+  <div class="kicker">05 · AI 어시스턴트</div>
+  <h1>사기 신호를 잡고, 최신 정보는 웹에서</h1>
+  <div class="grid g2 fill" style="margin-top:10px;">
+    <div><div class="shot" style="height:620px;"><img src="img/chat_deal.png" style="object-position: 0 100%;" /></div>
+      <div class="caption"><b>거래 평가</b> · "에어팟 프로 2 13만원, '카톡 연락, 선입금 시 예약'" → 시세 대비 -20% <span class="pill good">매우 저렴</span> 이지만 <span class="pill warn">⚠ 선입금 요구</span><span class="pill warn">⚠ 외부 메신저 유도</span></div></div>
+    <div><div class="shot" style="height:620px;"><img src="img/chat_web.png" /></div>
+      <div class="caption"><b>웹 검색</b> · "아이폰 17 출시가 찾아서 중고 시세와 비교" → 애플 공식 사이트를 출처로 인용하고 수집 시세와 비교</div></div>
+  </div>
+  <div class="footer"><span>ApplePick</span><span>7</span></div>
+</section>
+
+<!-- 8. 시스템 아키텍처 -->
+<section class="slide">
+  <div class="kicker">06 · 시스템 구조</div>
+  <h1>전체 아키텍처</h1>
+  <p class="lead">수집 → 저장 → API → 웹 / AI 의 단순한 흐름, 각 단계는 교체 가능</p>
+  <div class="flow" style="margin-top:20px;">
+    <div class="node"><b>🕷️ 크롤러</b><span>번개장터 웹 API<br/>샘플 생성기<br/>(소스 플러그인 구조)</span></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>🗄️ 저장소</b><span>Elasticsearch 8 (nori)<br/>또는 데모 파일 저장소<br/>+ MariaDB / SQLite</span></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>⚙️ Flask API</b><span>검색 · 시세 · 인기<br/>알림 · Swagger 문서</span></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>🖥️ React 웹</b><span>Vite · React 18<br/>TanStack Query</span></div>
+  </div>
+  <div class="flow" style="margin-top:34px;">
+    <div style="flex:1;"></div>
+    <div class="node hl" style="flex:2.2;"><b>✨ AI 어시스턴트 (LangGraph + LangChain + OpenAI)</b><span>Flask API 안에서 같은 데이터를 도구로 사용 · 진행 상황을 SSE로 실시간 전송</span></div>
+    <div style="flex:1;"></div>
+  </div>
+  <div class="grid g3" style="margin-top:40px;">
+    <div class="card" style="padding:28px 34px;"><h2 style="font-size:28px;">🚀 배포</h2><p>Docker Compose 한 번으로 전체 실행</p></div>
+    <div class="card" style="padding:28px 34px;"><h2 style="font-size:28px;">💻 데모 모드</h2><p>ES·DB 없이 demo.bat 하나로 실행</p></div>
+    <div class="card" style="padding:28px 34px;"><h2 style="font-size:28px;">🔑 설정</h2><p>.env 에 OpenAI 키 하나만 입력</p></div>
+  </div>
+  <div class="footer"><span>ApplePick</span><span>8</span></div>
+</section>
+
+<!-- 9. LangGraph -->
+<section class="slide">
+  <div class="kicker">07 · AI 구조</div>
+  <h1>LangGraph 에이전트 흐름</h1>
+  <p class="lead">의도를 먼저 분류하고, 필요한 도구를 LLM이 스스로 골라 반복 실행</p>
+  <div class="flow" style="margin-top:10px;">
+    <div class="node" style="flex:.8;"><b>💬 질문</b><span>텍스트 · 음성</span></div>
+    <div class="arrow">→</div>
+    <div class="node hl"><b>🧭 analyze</b><span>의도 분류 · 제품 · 예산 추출<br/>(구조화 출력)</span></div>
+    <div class="arrow">→</div>
+    <div class="node hl"><b>🤖 agent</b><span>LLM이 도구 선택<br/>+ 웹 검색</span></div>
+    <div class="arrow">⇄</div>
+    <div class="node hl"><b>🛠️ tools</b><span>LangChain 도구 실행<br/>결과를 다시 agent로</span></div>
+    <div class="arrow">→</div>
+    <div class="node" style="flex:.8;"><b>✅ 답변</b><span>요약 + 카드</span></div>
+  </div>
+  <div style="display:flex; gap:28px; margin-top:40px;">
+    <div class="card" style="flex:1;"><h2 style="font-size:30px;">분기 처리</h2><p>애플 중고거래와 무관한 질문("오늘 날씨?")은 analyze 단계에서 <b style="color:var(--text)">decline</b> 노드로 보내 도구를 쓰지 않고 안내</p></div>
+    <div class="card" style="flex:1;"><h2 style="font-size:30px;">LangChain 활용</h2><p><code>ChatOpenAI</code> · <code>with_structured_output</code> · <code>bind_tools</code> · <code>@tool</code> · <code>BaseRetriever</code></p></div>
+    <div class="card" style="flex:1;"><h2 style="font-size:30px;">신뢰성</h2><p>가격·매물 숫자는 반드시 도구 결과만 사용. 샘플 데이터가 섞이면 AI가 스스로 밝힘</p></div>
+  </div>
+  <div class="footer"><span>ApplePick</span><span>9</span></div>
+</section>
+
+<!-- 10. 기술 적용 -->
+<section class="slide">
+  <div class="kicker">08 · 기술 적용</div>
+  <h1>자체 Tools 6종 + RAG + 인터넷 검색</h1>
+  <table style="margin-top:14px;">
+    <tr><th style="width:22%">도구</th><th style="width:44%">하는 일</th><th>사용 예</th></tr>
+    <tr><td><b>🔎 find_product</b></td><td>'아이폰15프로' 같은 자유 표현 → 정확한 모델 키</td><td>모든 질문의 첫 단계</td></tr>
+    <tr><td><b>🛒 search_listings</b></td><td>예산·정렬 조건으로 수집 매물 검색 (시세 50% 미만 미끼 제외)</td><td>"90만원 이하 매물"</td></tr>
+    <tr><td><b>📊 get_market_price</b></td><td>7일 평균·최저가, 4주 추이(상승/하락/보합), 데이터 출처</td><td>"요즘 시세 어때?"</td></tr>
+    <tr><td><b>⚖️ evaluate_deal</b></td><td>가격 수준 6단계 분류 + 사기·긍정 신호 탐지</td><td>"이 가격 괜찮아?"</td></tr>
+    <tr><td><b>📚 search_buying_guide</b></td><td><b>RAG</b> · 구매 가이드 문서 검색 (한국어 BM25 검색기)</td><td>"살 때 뭘 확인해?"</td></tr>
+    <tr><td><b>🔔 register_price_alert</b></td><td>지정가 이하 매물 이메일 알림 등록</td><td>"80만원 이하면 알려줘"</td></tr>
+    <tr><td><b>🌐 web_search</b></td><td><b>인터넷 검색</b> · OpenAI 내장 도구, 출처 링크 표시</td><td>"출시가 찾아봐"</td></tr>
+  </table>
+  <div class="footer"><span>ApplePick</span><span>10</span></div>
+</section>
+
+<!-- 11. 시연 시나리오 -->
+<section class="slide">
+  <div class="kicker">09 · 시연</div>
+  <h1>시연 시나리오</h1>
+  <p class="lead">입력에 따라 다른 도구 조합과 다른 답변 · 실제 응답 시간 측정</p>
+  <table>
+    <tr><th style="width:5%">#</th><th style="width:44%">질문</th><th style="width:38%">AI가 쓴 도구</th><th>시간</th></tr>
+    <tr><td>1</td><td><b>아이폰 15 프로 90만원 이하 매물 찾아줘</b></td><td>상품 찾기 → 매물 검색 → 시세 분석</td><td>11~15초</td></tr>
+    <tr><td>2</td><td><b>에어팟 프로 2 13만원, '카톡 연락·선입금'</b></td><td>상품 찾기 → 거래 평가 → 시세 → 가이드(RAG)</td><td>9초</td></tr>
+    <tr><td>3</td><td><b>중고 아이폰 살 때 확인할 것</b></td><td>가이드(RAG)</td><td>9초</td></tr>
+    <tr><td>4</td><td><b>아이폰 17 출시가 찾아서 중고 시세와 비교</b></td><td>상품 찾기 → 시세 → 웹 검색</td><td>11~15초</td></tr>
+    <tr><td>5</td><td><b>🎙️ (음성) 맥북 에어 80만원 이하 알림</b></td><td>상품 찾기 → 알림 등록</td><td>8초</td></tr>
+    <tr><td>6</td><td><b>오늘 날씨 어때?</b></td><td>의도 분류 → 거절 분기</td><td>2초</td></tr>
+  </table>
+  <div class="footer"><span>ApplePick</span><span>11</span></div>
+</section>
+
+<!-- 12. 공공성·상업성 -->
+<section class="slide">
+  <div class="kicker">10 · 가치</div>
+  <h1>공공성과 상업성</h1>
+  <div class="grid g2" style="margin-top:20px;">
+    <div class="card"><span class="icon">🤝</span><h2>공공성</h2>
+      <ul><li><b style="color:var(--text)">중고거래 사기 예방</b> · 선입금·외부 메신저 같은 위험 신호를 거래 전에 경고</li>
+      <li><b style="color:var(--text)">정보 비대칭 해소</b> · 누구나 무료로 적정 시세 확인</li>
+      <li><b style="color:var(--text)">접근성</b> · 음성 질문, 자연어 대화로 디지털 약자도 사용</li>
+      <li><b style="color:var(--text)">자원 순환</b> · 중고 전자기기 재사용 촉진</li></ul></div>
+    <div class="card"><span class="icon">💼</span><h2>상업성 (수익 모델)</h2>
+      <ul><li><b style="color:var(--text)">제휴 수수료</b> · 안전결제·검수·택배 서비스 연결</li>
+      <li><b style="color:var(--text)">프리미엄 알림</b> · 실시간·다중 조건 알림 구독</li>
+      <li><b style="color:var(--text)">시세 데이터 B2B</b> · 리퍼·매입 업체 대상 시세 API</li>
+      <li><b style="color:var(--text)">확장성</b> · 애플 → 갤럭시·카메라 등 카테고리 확대</li></ul></div>
+  </div>
+  <div class="footer"><span>ApplePick</span><span>12</span></div>
+</section>
+
+<!-- 13. 개선점 & 스택 -->
+<section class="slide">
+  <div class="kicker">11 · 기술 스택</div>
+  <h1>2022 → 2026, 무엇이 달라졌나</h1>
+  <table style="margin-top:14px;">
+    <tr><th style="width:18%">영역</th><th style="width:38%">2022</th><th>2026 (애플픽)</th></tr>
+    <tr><td><b>백엔드</b></td><td>Python 3.9 · Flask 1 · ES 7 (클라이언트 버전 불일치)</td><td>Python 3.12 · Flask 3 · Elasticsearch 8.17 · MariaDB 11.4 · .env 설정</td></tr>
+    <tr><td><b>프론트엔드</b></td><td>Create React App (지원 종료) · React 17</td><td>Vite · React 18 · React Router 7 · TanStack Query 5 · 새 디자인</td></tr>
+    <tr><td><b>수집</b></td><td>번개장터 구 API · 당근 HTML (현재 둘 다 동작 안 함)</td><td>번개장터 새 웹 API · 샘플 생성기 · 플러그인 구조</td></tr>
+    <tr><td><b>검색 정확도</b></td><td>OR 검색 (다른 모델 섞임)</td><td>제목 기준 AND 검색 + 상위 모델 제외 + 미끼 가격 필터</td></tr>
+    <tr><td><b>AI</b></td><td>없음</td><td>LangGraph · LangChain · OpenAI · RAG · 웹 검색 · 음성</td></tr>
+    <tr><td><b>보안·운영</b></td><td>알림 목록 API 공개 (이메일 노출)</td><td>관리자 토큰 보호 · Docker healthcheck · demo.bat 원클릭 실행</td></tr>
+  </table>
+  <div class="footer"><span>ApplePick</span><span>13</span></div>
+</section>
+
+<!-- 14. 한계와 계획 -->
+<section class="slide">
+  <div class="kicker">12 · 향후 계획</div>
+  <h1>한계와 다음 단계</h1>
+  <div class="grid g2" style="margin-top:20px;">
+    <div class="card"><h2>현재 한계</h2>
+      <ul><li>당근은 자동 수집을 차단해 제외 (우회하지 않음)</li><li>번개장터 비공식 웹 API는 구조가 바뀔 수 있음</li><li>RAG 문서가 아직 적음 (키워드 검색)</li><li>시연 안정성을 위해 샘플 데이터 병행 (화면·AI 답변에 구분 표시)</li></ul></div>
+    <div class="card"><h2>다음 단계</h2>
+      <ul><li>마켓 공식 제휴·API로 수집 소스 확대</li><li>임베딩 기반 벡터 검색으로 RAG 고도화</li><li>매물 사진으로 상태·가품 판별 (멀티모달)</li><li>모바일 앱 · 푸시 알림</li></ul></div>
+  </div>
+  <div class="footer"><span>ApplePick</span><span>14</span></div>
+</section>
+
+<!-- 15. 팀 & 마무리 -->
+<section class="slide dark" style="justify-content:center;">
+  <div class="kicker">13 · 팀</div>
+  <h1 style="font-size:60px;">역할 분담</h1>
+  <div class="grid g3" style="margin:20px 0 80px;">
+    <div class="card" style="background:rgba(255,255,255,.08);box-shadow:none;"><h2 style="color:#fff;">[이름]</h2><p style="color:rgba(255,255,255,.75);">[역할 · 예) 기획 / 발표 / 사용자 조사]</p></div>
+    <div class="card" style="background:rgba(255,255,255,.08);box-shadow:none;"><h2 style="color:#fff;">[이름]</h2><p style="color:rgba(255,255,255,.75);">[역할 · 예) 백엔드 / 크롤러 / AI 에이전트]</p></div>
+    <div class="card" style="background:rgba(255,255,255,.08);box-shadow:none;"><h2 style="color:#fff;">[이름]</h2><p style="color:rgba(255,255,255,.75);">[역할 · 예) 프론트엔드 / UI 디자인]</p></div>
+  </div>
+  <div style="font-size:96px; font-weight:800; letter-spacing:-0.03em;">감사합니다 🍎</div>
+  <p class="lead" style="margin-top:10px;">Q &amp; A</p>
+  <div class="footer"><span>ApplePick · 애플픽</span><span>15</span></div>
+</section>
+
+</body>
+</html>
