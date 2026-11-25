@@ -1,27 +1,22 @@
-# from flask import request
-# from flask_apispec import doc, use_kwargs
-# from server.main.controllers.admin import (
-#     API_CATEGORY,
-#     admin_bp,
-# )
-# from server.utils.common import response_json_with_code
-# from server.main import create_app
-# from elasticsearch import Elasticsearch
+from flask_apispec import doc
 
-# app = create_app()
+from server.main.controllers.admin import API_CATEGORY, admin_bp
+from server.main.es import get_store
 
 
-# @admin_bp.route("/manage/clean", methods=["DELETE"])
-# @doc(tags=[API_CATEGORY], summary="ES에 저장된 데이터 모두 삭제", description="ES에 저장된 데이터 모두 삭제")
-# def clean():
-#     # 일레스틱서치 IP주소와 포트(기본:9200)로 연결한다
-#     es = Elasticsearch("http://elasticsearch:9200/")  # 환경에 맞게 바꿀 것
-#     es.info()
+@admin_bp.route("/stats", methods=["GET"])
+@doc(tags=[API_CATEGORY], summary="수집 현황", description="마켓별 저장된 매물 수")
+def stats():
+    result = get_store().search({"size": 0, "aggs": {"markets": {"terms": {"field": "market"}}}})
+    markets = {b["key"]: b["doc_count"] for b in result["aggregations"]["markets"]["buckets"]}
+    return {"total": result["hits"]["total"]["value"], "markets": markets}
 
-#     # 인덱스 지정
-#     index_name = "products"
 
-#     # 삭제
-#     es.indices.delete(index=index_name)
-
-#     return True
+@admin_bp.route("/health", methods=["GET"])
+@doc(tags=[API_CATEGORY], summary="헬스 체크", description="API, Elasticsearch 연결 상태")
+def health():
+    try:
+        es_ok = bool(get_store().es.ping())
+    except Exception:
+        es_ok = False
+    return {"api": True, "elasticsearch": es_ok}

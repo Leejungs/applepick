@@ -1,32 +1,20 @@
-import { useInfiniteQuery } from 'react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import SearchAPI from '../api/search';
 
-const useSearchQuery = item => {
-  const fetchResult = async ({ pageParam = 0 }) => {
-    if (item !== '') {
-      const response = await SearchAPI.searchPageQuery(item, pageParam);
-      const result = response.data;
-      return {
-        result: result['result'] || {},
-        nextPage: pageParam + 1,
-        isLastPage: result['result'].length < 20,
-      };
-    }
-  };
+const PAGE_SIZE = 20;
 
-  const query = useInfiniteQuery(['search', item], fetchResult, {
-    getNextPageParam: (lastPage, pages) => {
-      if (!lastPage?.isLastPage) return lastPage?.nextPage;
-      return undefined;
+const useSearchQuery = item =>
+  useInfiniteQuery({
+    queryKey: ['search', item],
+    queryFn: async ({ pageParam }) => {
+      const { data } = await SearchAPI.searchPageQuery(item, pageParam);
+      return { result: data.result || [], page: pageParam };
     },
-    refetchOnWindowFocus: false,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-    retry: 1,
-    cacheTime: 60 * 1000,
+    initialPageParam: 0,
+    getNextPageParam: lastPage =>
+      lastPage.result.length < PAGE_SIZE ? undefined : lastPage.page + 1,
+    enabled: !!item,
+    gcTime: 60 * 1000,
   });
-
-  return query;
-};
 
 export default useSearchQuery;

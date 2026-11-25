@@ -1,95 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import SearchAPI from '../../api/search';
 import * as Style from './styles';
 import PriceChart from '../../components/PriceChart';
+import useCatalog from '../../query/useCatalog';
 
 function ProductPriceChart() {
-  const products = [
-    'AirPods 1Gen',
-    'AirPods 2Gen',
-    'AirPods 3Gen',
-    'AirPods Pro',
-    'AirPods Max',
-    'Series 1',
-    'Series 2',
-    'Series 3',
-    'Series 4',
-    'Series 5',
-    'Series 6',
-    'Series 7',
-    'SE',
-    'iPad',
-    'iPad Air',
-    'iPad mini',
-    'iPad Pro',
-    'iPad Pro(12.9)',
-    'iPhone 6',
-    'iPhone 6+',
-    'iPhone 6s',
-    'iPhone 6s+',
-    'iPhone 7',
-    'iPhone 7+',
-    'iPhone 8',
-    'iPhone 8+',
-    'iPhone X',
-    'iPhone XR',
-    'iPhone Xs',
-    'iPhone Xs Max',
-    'iPhone 11',
-    'iPhone 11 Pro',
-    'iPhone 11 Pro Max',
-    'iPhone 12 mini',
-    'iPhone 12',
-    'iPhone 12 Pro',
-    'iPhone 12 Pro Max',
-    'iPhone 13 mini',
-    'iPhone 13',
-    'iPhone 13 Pro',
-    'iPhone 13 Pro Max',
-    'iPhone SE',
-    'iPhone SE Gen2',
-    'iPhone SE Gen3',
-    'Mac mini',
-    'Mac Studio',
-    'Mac Pro',
-    'iMac',
-    'MacBook Air',
-    'MacBook Pro',
-  ];
+  const { products } = useCatalog();
+  const [selected, setSelected] = useState('');
+  const key = selected || products[0]?.key;
 
-  const [weeklyPrice, setWeeklyPrice] = useState(null);
-  const [selected, setSelected] = useState(0);
-
-  useEffect(() => {
-    search(products[selected]);
-  }, [selected]);
-
-  const search = async query => {
-    const response = await SearchAPI.searchWeeklyPriceQuery(query);
-    setWeeklyPrice(response.data);
-  };
-
-  const handleSelect = e => {
-    setSelected(e.target.value);
-  };
+  const { data } = useQuery({
+    queryKey: ['weekly', key],
+    queryFn: async () => (await SearchAPI.searchWeeklyPriceQuery(key)).data,
+    enabled: !!key,
+  });
 
   return (
     <Style.Container>
       <Style.GuideText>
         상품을 선택하면, 해당 최근 한달의 가격 추이가 나타납니다.
       </Style.GuideText>
-      <Style.SelectBox name="keyword" value={selected} onChange={handleSelect}>
-        {products.map((item, index) => {
-          return (
-            <option key={index} value={index}>
-              {item.includes('Series') || item === 'SE'
-                ? 'AppleWatch ' + item
-                : item}
-            </option>
-          );
-        })}
+      <Style.SelectBox
+        name="keyword"
+        value={key || ''}
+        onChange={e => setSelected(e.target.value)}
+      >
+        {products.map(item => (
+          <option key={item.key} value={item.key}>
+            {item.label}
+          </option>
+        ))}
       </Style.SelectBox>
-      <PriceChart result={weeklyPrice}>ProductPriceChart</PriceChart>
+      <PriceChart result={data} />
     </Style.Container>
   );
 }

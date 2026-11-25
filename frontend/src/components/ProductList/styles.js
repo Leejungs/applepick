@@ -2,39 +2,45 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   width: 100%;
-  margin-top: 5rem;
-  margin-bottom: 2rem;
-  display: flex;
-  justify-content: space-evenly;
-  flex-flow: row wrap;
+  margin-top: 2rem;
 `;
 
 export const ItemWrapper = styled.div`
-  width: 100%;
-  margin: auto;
   display: flex;
-  justify-content: space-evenly;
-  flex-flow: row wrap;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
 `;
 
 export const ItemBtn = styled.button`
-  margin: 1rem 2rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  border: 1px solid ${p => (p.$isClicked ? 'transparent' : 'var(--line)')};
+  background: ${p => (p.$isClicked ? 'var(--grad)' : 'var(--surface)')};
+  color: ${p => (p.$isClicked ? '#fff' : 'var(--text)')};
   font-size: 0.9rem;
-  border: 0;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-  padding: 1rem 2rem;
-  background-color: ${props =>
-    props.isClicked ? 'rgba(0, 0, 0, 0.4)' : 'white'};
-  color: ${props => (props.isClicked ? 'white' : 'black')};
-  border-radius: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.5s;
-  :hover {
-    background-color: rgba(0, 0, 0, 0.2);
+  transition: all 0.15s;
+  box-shadow: ${p => (p.$isClicked ? '0 4px 12px rgba(91,91,214,.35)' : 'none')};
+
+  &:hover {
+    border-color: var(--primary);
+    color: ${p => (p.$isClicked ? '#fff' : 'var(--primary)')};
   }
 `;
 
 export const Observer = styled.div`
   width: 100%;
-  height: 10px;
+  min-height: 10px;
+`;
+
+export const Message = styled.p`
+  width: 100%;
+  margin: 3rem 0;
+  text-align: center;
+  color: var(--text-sub);
 `;

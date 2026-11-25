@@ -174,3 +174,9 @@ kakao_api.json
 backend/server/main/server.cfg
 backend/migrations
 email_account.json
+# 2026 업데이트
+frontend/build/
+backend/crawler/image/
+
+# 로컬 데모 실행 환경
+backend/.venv/

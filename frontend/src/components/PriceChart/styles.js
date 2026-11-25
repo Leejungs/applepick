@@ -1,11 +1,14 @@
 import styled from 'styled-components';
 
 export const ChartWrapper = styled.div`
-  width: 100%;
+  margin-top: 1.5rem;
+  min-height: 200px;
+
+  p {
+    color: var(--text-sub);
+    text-align: center;
+    padding: 3rem 0;
+  }
 `;
 
-export const PriceInfo = styled.div`
-  margin: 1rem;
-  font-size: 1.2rem;
-  font-weight: bold;
-`;
+export const PriceInfo = styled.div``;

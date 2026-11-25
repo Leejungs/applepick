@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import * as Style from './styles';
 
-function Carousel({ title, marketBase, images }) {
+function Carousel({ title, images }) {
   function NextArrow(props) {
     const { className, style, onClick } = props;
     return (
@@ -26,7 +26,7 @@ function Carousel({ title, marketBase, images }) {
 
   const settings = {
     dots: true, // 슬라이드 밑에 점 보이게
-    infinite: true, // 무한으로 반복
+    infinite: images.length > 1, // 무한으로 반복
     speed: 500,
     autoplaySpeed: 2000, // 넘어가는 속도
     slidesToScroll: 1, // 1장씩 뒤로 넘어가게
@@ -44,7 +44,8 @@ function Carousel({ title, marketBase, images }) {
             <Style.CardBox key={index}>
               <Style.CardImg
                 alt={title}
-                src={`/api/image/${marketBase}/${source}`}
+                src={source}
+                referrerPolicy="no-referrer"
               />
             </Style.CardBox>
           );

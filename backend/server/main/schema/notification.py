@@ -1,8 +1,7 @@
-from marshmallow import fields, Schema
+from marshmallow import Schema, fields, validate
 
 
-# Requests
 class RequestNotificationSchema(Schema):
-      email = fields.Str(description="유저 이메일", required=True)
-      product = fields.Str(description="등록할 상품", required=True)
-      price = fields.Int(description="가격", required=True)
+    email = fields.Email(required=True, metadata={"description": "유저 이메일"})
+    product = fields.Str(required=True, metadata={"description": "등록할 상품 키 (예: iPhone 15 Pro)"})
+    price = fields.Int(required=True, validate=validate.Range(min=0), metadata={"description": "지정가 (원)"})

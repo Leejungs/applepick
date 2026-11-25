@@ -1,17 +1,16 @@
 import styled from 'styled-components';
 
 export const Background = styled.div`
-  height: 100%;
-  width: 100%;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: fixed;
-  left: 0;
-  top: 0;
-  text-align: center;
-  background-color: rgba(0, 0, 0, 0.75);
-  animation: modal-bg-show 0.5s;
+  padding: 20px;
+  background: rgba(14, 15, 28, 0.6);
+  backdrop-filter: blur(4px);
+  animation: modal-bg-show 0.2s;
   @keyframes modal-bg-show {
     from {
       opacity: 0;
@@ -23,91 +22,110 @@ export const Background = styled.div`
 `;
 
 export const Content = styled.div`
-  width: 600px;
-  height: 90%;
   position: relative;
-  background: #ffffff;
-  border-radius: 0.3rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  animation: modal-show 0.5s;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  animation: modal-show 0.25s ease-out;
   @keyframes modal-show {
     from {
       opacity: 0;
-      margin-top: -50px;
+      transform: translateY(20px) scale(0.98);
     }
     to {
       opacity: 1;
-      margin-top: 0;
+      transform: none;
     }
   }
 `;
 
 export const Main = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
+  padding: 1.5rem 1.75rem 1.75rem;
 `;
 
 export const TitleLinkWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  margin: 1.2rem 0;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+
+  > span {
+    flex-shrink: 0;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    background: #f1f2f6;
+    color: var(--text-sub);
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
 `;
 
 export const Title = styled.div`
-  text-align: left;
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.35;
 `;
 
 export const HyperLink = styled.a`
-  text-align: left;
-  padding: auto;
-  color: skyblue;
-  text-decoration: underline;
-  cursor: pointer;
-  margin-right: auto;
+  flex-shrink: 0;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  background: var(--grad);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
 `;
 
 export const InfoWrapper = styled.div`
   display: flex;
-  flex-direction: row;
-  padding: 0.5rem 0;
-  font-size: 0.8rem;
-  color: gray;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0.75rem 0 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-sub);
+  font-size: 0.85rem;
 `;
 
 export const Price = styled.div`
-  font-weight: bolder;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text);
 `;
 
-export const Region = styled.div`
-  padding-left: 0.7rem;
-`;
+export const Region = styled.div``;
 
-export const UploadDate = styled.div`
-  padding-left: 0.7rem;
-`;
+export const UploadDate = styled.div``;
 
-export const Desc = styled.span`
-  white-space: pre-line;
-  text-align: left;
-  font-size: 1rem;
-  margin-top: 1rem;
+export const Desc = styled.div`
+  white-space: pre-wrap;
+  line-height: 1.7;
+  font-size: 0.95rem;
 `;
 
 export const CloseBtn = styled.button`
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(0, 0, 0, 0.45);
   cursor: pointer;
-  background-color: transparent;
-  border: none;
+
+  svg {
+    font-size: 1.5rem !important;
+  }
 `;
 
 export const ImgBox = styled.div``;

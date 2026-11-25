@@ -7,6 +7,7 @@ import {
   ProductItem,
   ProductImg,
   ScrollToTop,
+  SectionTitle,
 } from './styles';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
@@ -16,32 +17,32 @@ const Main = () => {
     {
       param: 'mac',
       name: 'Mac',
-      src: `${process.env.PUBLIC_URL}/images/mac.png`,
+      src: `/images/mac.png`,
     },
     {
       param: 'macbook',
       name: 'MacBook',
-      src: `${process.env.PUBLIC_URL}/images/macbook.png`,
+      src: `/images/macbook.png`,
     },
     {
       param: 'iphone',
       name: 'iPhone',
-      src: `${process.env.PUBLIC_URL}/images/iphone.png`,
+      src: `/images/iphone.png`,
     },
     {
       param: 'ipad',
       name: 'iPad',
-      src: `${process.env.PUBLIC_URL}/images/ipad.png`,
+      src: `/images/ipad.png`,
     },
     {
       param: 'applewatch',
       name: 'Apple Watch',
-      src: `${process.env.PUBLIC_URL}/images/applewatch.png`,
+      src: `/images/applewatch.png`,
     },
     {
       param: 'airpods',
       name: 'AirPods',
-      src: `${process.env.PUBLIC_URL}/images/airpods.png`,
+      src: `/images/airpods.png`,
     },
   ];
 
@@ -88,13 +89,13 @@ const Main = () => {
           <ArrowUpwardIcon></ArrowUpwardIcon>
         </ScrollToTop>
       ) : null}
+      <SectionTitle id="categories">카테고리</SectionTitle>
+      <p>찾고 있는 제품군을 고르고, 모델을 선택하세요.</p>
       <ListWrapper>
         {appleProducts.map(product => {
           return (
             <ProductItem key={product.param} to={`/${product.param}`}>
-              <ProductImg
-                src={`${process.env.PUBLIC_URL}/images/${product.param}.png`}
-              />
+              <ProductImg src={`/images/${product.param}.png`} />
               {product.name}
             </ProductItem>
           );

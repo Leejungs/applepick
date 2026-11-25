@@ -1,0 +1,138 @@
+# 통합 실행: docker compose up --build -d
+#   웹      http://localhost:2000   (WEB_PORT 로 변경)
+#   API 문서 http://localhost:2000/docs/
+#   Kibana  docker compose --profile kibana up -d  ->  http://localhost:5601
+name: eaten-apple
+
+x-backend-env: &backend-env
+  TZ: Asia/Seoul
+  ES_HOST: http://elasticsearch:9200
+  SEARCH_BACKEND: elasticsearch
+  DATABASE_URL: mariadb+pymysql://root:${DB_ROOT_PASSWORD:-backstart}@db:3306/capstone?charset=utf8mb4
+  API_BASE_URL: http://api:50000
+  ADMIN_TOKEN: ${ADMIN_TOKEN:-}
+  SMTP_HOST: ${SMTP_HOST:-}
+  SMTP_PORT: ${SMTP_PORT:-587}
+  SMTP_USER: ${SMTP_USER:-}
+  SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+  SMTP_FROM: ${SMTP_FROM:-}
+  CRAWL_SOURCES: ${CRAWL_SOURCES:-bunjang}
+  CRAWL_PAGES: ${CRAWL_PAGES:-1}
+  CRAWL_INTERVAL: ${CRAWL_INTERVAL:-1800}
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  AI_MODEL: ${AI_MODEL:-gpt-5.4-mini}
+  AI_EFFORT: ${AI_EFFORT:-low}
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: capstone-web
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-2000}:80"
+    networks: [backend]
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: capstone-api
+    restart: unless-stopped
+    environment: *backend-env
+    depends_on:
+      db:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    volumes:
+      - images:/app/crawler/image
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:50000/api/admin/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [backend]
+
+  crawler:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: capstone-crawler
+    restart: unless-stopped
+    environment: *backend-env
+    command: ["python", "crawler/main.py", "--loop", "${CRAWL_INTERVAL:-1800}"]
+    depends_on:
+      api:
+        condition: service_healthy
+    volumes:
+      - images:/app/crawler/image
+    networks: [backend]
+
+  db:
+    image: mariadb:11.4
+    container_name: capstone-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-backstart}
+      MARIADB_DATABASE: capstone
+      TZ: Asia/Seoul
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [backend]
+
+  elasticsearch:
+    build:
+      context: .
+      dockerfile: Dockerfile.es
+    container_name: capstone-es
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms${ES_HEAP:-512m} -Xmx${ES_HEAP:-512m}
+      TZ: Asia/Seoul
+    ports:
+      - "127.0.0.1:9200:9200"   # 로컬에서 크롤러/디버깅용 (외부 비공개)
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    ulimits:
+      memlock: { soft: -1, hard: -1 }
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=5s || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+    networks: [backend]
+
+  kibana:
+    image: kibana:8.17.0
+    container_name: capstone-kibana
+    profiles: [kibana]
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+      TZ: Asia/Seoul
+    ports:
+      - "127.0.0.1:5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks: [backend]
+
+volumes:
+  db-data:
+  es-data:
+  images:
+
+networks:
+  backend:

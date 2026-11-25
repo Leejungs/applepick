@@ -1,50 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import * as Style from './styles';
 import HotAPI from '../../api/hot';
 import SearchAPI from '../../api/search';
 import TopViews from '../../components/TopViews';
+import useCatalog from '../../query/useCatalog';
+
+const HOT_COUNT = 5;
+const RECENT_PAGE_SIZE = 5;
 
 function HotProducts() {
-  const [hotProducts, setHotProducts] = useState([]);
-  const [page, setPage] = useState(0);
-  const [topViews, setTopViews] = useState([]);
+  const { categories } = useCatalog();
 
-  const search = async () => {
-    const search_size = 5;
-    const response = await HotAPI.getHotProducts(search_size);
-    setHotProducts(response.data);
-  };
+  const { data: hotProducts = {} } = useQuery({
+    queryKey: ['hot', HOT_COUNT],
+    queryFn: async () => (await HotAPI.getHotProducts(HOT_COUNT)).data,
+  });
 
-  const searchRecent = async () => {
-    const response = await SearchAPI.searchRecentQuery(page);
-    setTopViews(preTopViews => [...preTopViews, response.data.result]);
-  };
+  const recent = useInfiniteQuery({
+    queryKey: ['recent'],
+    queryFn: async ({ pageParam }) =>
+      (await SearchAPI.searchRecentQuery(pageParam)).data.result,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, pages) =>
+      lastPage.length < RECENT_PAGE_SIZE ? undefined : pages.length,
+  });
 
-  useEffect(() => {
-    search();
-  }, []);
+  // 상품 키 -> 카테고리 대표 이미지
+  const categoryOf = key =>
+    categories.find(c => c.products.some(p => p.key === key));
 
-  useEffect(() => {
-    searchRecent();
-  }, [page]);
-
-  const conversion = key => {
-    let retKeyword = '';
-    if (key.includes('MacBook')) {
-      retKeyword = 'macbook';
-    } else if (key.includes('iPhone')) {
-      retKeyword = 'iphone';
-    } else if (key.includes('iPad')) {
-      retKeyword = 'ipad';
-    } else if (key.includes('Series')) {
-      retKeyword = 'applewatch';
-    } else if (key.includes('AirPods')) {
-      retKeyword = 'airpods';
-    } else if (key.includes('Mac')) {
-      retKeyword = 'mac';
-    }
-    return retKeyword;
-  };
+  const topViews = recent.data?.pages.flat() || [];
 
   return (
     <Style.Container>
@@ -53,14 +39,19 @@ function HotProducts() {
         해당 사이트에서 많이 검색된 제품들입니다.
       </Style.HotSubText>
       <Style.HotsWrapper>
-        {Object.entries(hotProducts).map(([key, value], index) => {
+        {Object.keys(hotProducts).length === 0 && (
+          <Style.HotSubText>아직 검색 기록이 없습니다.</Style.HotSubText>
+        )}
+        {Object.keys(hotProducts).map((key, index) => {
+          const category = categoryOf(key);
+          const label = category?.products.find(p => p.key === key)?.label;
           return (
-            <Style.HotWrapper key={index}>
+            <Style.HotWrapper key={key}>
               <Style.HotImg
-                src={`${process.env.PUBLIC_URL}/images/${conversion(key)}.png`}
+                src={`/images/${category?.param || 'null_image'}.png`}
               />
               <Style.HotKeyword>
-                {index + 1}. {key}
+                {index + 1}. {label || key}
               </Style.HotKeyword>
             </Style.HotWrapper>
           );
@@ -69,11 +60,18 @@ function HotProducts() {
       <Style.TopViewsWrapper>
         <Style.HotTitle>Top Views</Style.HotTitle>
         <Style.HotSubText>
-          최근 게시글 중, 조회수가 많은 매물입니다.
+          최근 7일 게시글 중, 조회수가 많은 매물입니다.
         </Style.HotSubText>
         <TopViews result={topViews} />
       </Style.TopViewsWrapper>
-      <Style.MoreBtn onClick={() => setPage(page + 1)}>더보기</Style.MoreBtn>
+      {recent.hasNextPage && (
+        <Style.MoreBtn
+          onClick={() => recent.fetchNextPage()}
+          disabled={recent.isFetchingNextPage}
+        >
+          더보기
+        </Style.MoreBtn>
+      )}
     </Style.Container>
   );
 }

@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import * as Style from './styles';
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationAPI from '../../api/notification';
+import useCatalog from '../../query/useCatalog';
 
 function AlarmModal({ onClose }) {
   const outModal = useRef();
@@ -19,74 +20,44 @@ function AlarmModal({ onClose }) {
     price: '',
   });
 
-  const [product, setProduct] = useState('AirPods 1Gen');
+  const { products } = useCatalog();
+  const [product, setProduct] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  // input 변경 감지
+  const selected = product || products[0]?.key || '';
+
   const handleKeywordChange = e => {
     const { name, value } = e.target;
     setAlarmInfo({ ...alarmInfo, [name]: value });
   };
 
-  const handleProductChange = e => {
-    if (e.target.value.includes('AppleWatch')) {
-      setProduct(e.target.value.split('AppleWatch ')[1]);
-    } else {
-      setProduct(e.target.value);
+  const submit = async () => {
+    const price = Number(alarmInfo.price.replace(/[^0-9]/g, ''));
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(alarmInfo.email)) {
+      alert('이메일 형식을 확인해 주세요.');
+      return;
+    }
+    if (!price) {
+      alert('가격을 숫자로 입력해 주세요.');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await NotificationAPI.notificationSubmit(
+        alarmInfo.email,
+        price,
+        selected,
+      );
+      alert(
+        `${selected} ${price.toLocaleString('ko-KR')}원 이하 알림 등록 완료`,
+      );
+      onClose();
+    } catch {
+      alert('등록 중 오류가 발생했습니다.');
+    } finally {
+      setSubmitting(false);
     }
   };
-
-  const products = [
-    'AirPods 1Gen',
-    'AirPods 2Gen',
-    'AirPods 3Gen',
-    'AirPods Pro',
-    'AirPods Max',
-    'AppleWatch Series 1',
-    'AppleWatch Series 2',
-    'AppleWatch Series 3',
-    'AppleWatch Series 4',
-    'AppleWatch Series 5',
-    'AppleWatch Series 6',
-    'AppleWatch Series 7',
-    'AppleWatch SE',
-    'iPad',
-    'iPad Air',
-    'iPad mini',
-    'iPad Pro',
-    'iPad Pro(12.9)',
-    'iPhone 6',
-    'iPhone 6+',
-    'iPhone 6s',
-    'iPhone 6s+',
-    'iPhone 7',
-    'iPhone 7+',
-    'iPhone 8',
-    'iPhone 8+',
-    'iPhone X',
-    'iPhone XR',
-    'iPhone Xs',
-    'iPhone Xs Max',
-    'iPhone 11',
-    'iPhone 11 Pro',
-    'iPhone 11 Pro Max',
-    'iPhone 12 mini',
-    'iPhone 12',
-    'iPhone 12 Pro',
-    'iPhone 12 Pro Max',
-    'iPhone 13 mini',
-    'iPhone 13',
-    'iPhone 13 Pro',
-    'iPhone 13 Pro Max',
-    'iPhone SE',
-    'iPhone SE Gen2',
-    'iPhone SE Gen3',
-    'Mac mini',
-    'Mac Studio',
-    'Mac Pro',
-    'iMac',
-    'MacBook Air',
-    'MacBook Pro',
-  ];
 
   return createPortal(
     <Style.Background
@@ -120,29 +91,22 @@ function AlarmModal({ onClose }) {
               value={alarmInfo.price}
               name="price"
               onChange={handleKeywordChange}
-              placeholder="가격"
+              placeholder="가격 (이 금액 이하 매물이 올라오면 알림)"
+              inputMode="numeric"
             />
           </Style.InputWrapper>
-          <Style.SelectBox name="keyword" onChange={handleProductChange}>
-            {products.map((item, index) => {
-              return <option key={index}>{item}</option>;
-            })}
-          </Style.SelectBox>
-          <Style.SubmitBtn
-            onClick={() => {
-              NotificationAPI.notificationSubmit(
-                alarmInfo.email,
-                alarmInfo.price,
-                product,
-              )
-                .then(() => {
-                  alert(product + ' 등록 성공');
-                })
-                .catch(() => {
-                  alert('오류 발생');
-                });
-            }}
+          <Style.SelectBox
+            name="keyword"
+            value={selected}
+            onChange={e => setProduct(e.target.value)}
           >
+            {products.map(item => (
+              <option key={item.key} value={item.key}>
+                {item.label}
+              </option>
+            ))}
+          </Style.SelectBox>
+          <Style.SubmitBtn onClick={submit} disabled={submitting}>
             등록
           </Style.SubmitBtn>
         </Style.AlarmWrapper>

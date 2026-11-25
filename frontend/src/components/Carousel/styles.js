@@ -1,56 +1,38 @@
 import Slider from 'react-slick';
 import styled from 'styled-components';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 
 export const Container = styled.div`
-  width: 600px;
-  height: 500px;
-  margin: 0 auto;
+  width: 100%;
+  background: #0f1020;
+  border-radius: 24px 24px 0 0;
+  overflow: hidden;
 `;
 
-// 슬라이드 CSS
 export const StyledSlider = styled(Slider)`
-  /* .slick-list {
-    width: 600px;
-    height: 500px;
-    margin: 0 auto;
-  } */
-
   .slick-dots {
-    bottom: 5px;
+    bottom: 10px;
   }
-
-  .slick-prev:before,
-  .slick-next:before {
-    color: #525252;
-    opacity: 0.5;
+  .slick-dots li button:before {
+    color: #fff;
   }
-
   .slick-prev,
   .slick-next {
     z-index: 1;
-    cursor: pointer;
   }
-
   .slick-prev {
-    left: 10px;
+    left: 12px;
   }
-
   .slick-next {
-    right: 10px;
-  }
-
-  .slick-prev:hover:after,
-  .slick-next:hover:after {
-    color: #000000;
+    right: 12px;
   }
 `;
 
 export const CardBox = styled.div``;
 
 export const CardImg = styled.img`
+  display: block;
   margin: auto;
-  max-width: 600px;
-  max-height: 500px;
+  width: 100%;
+  height: 420px;
+  object-fit: contain;
 `;

@@ -1,101 +1,57 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import CloseIcon from '@mui/icons-material/Close';
 import * as Style from './styles';
 import Carousel from '../Carousel';
-import CloseIcon from '@mui/icons-material/Close';
+import { formatPrice, formatTimestamp } from '../../utils/format';
+import { getImages, getListingUrl, MARKET_LABEL } from '../../utils/listing';
 
 function DetailModal({ detail, onClose }) {
-  // detail = {date, desc, images, keyword, market, pictures, pid, price, region, title, url, views}
+  // detail = {market, pid, url, title, desc, price, date, pictures, region, views, keyword}
   const outModal = useRef();
-  const [marketBase, setMarketBase] = useState('');
-  const [images, setImages] = useState([]);
+  const images = getImages(detail);
+  const url = getListingUrl(detail);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    const onKey = e => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = 'visible';
+      window.removeEventListener('keydown', onKey);
     };
-  }, []);
-
-  useEffect(() => {
-    setMarketBase(getMarketBaseURL(detail.market));
-    setImages(detail.market === 'Daangn' ? detail.images : detail.pictures);
-  }, []);
-
-  function getMarketBaseURL(name) {
-    switch (name) {
-      case 'Daangn':
-        return 'daangn_image';
-      case 'Bunjang':
-        return 'bunjang_image';
-      default:
-        return '';
-    }
-  }
-
-  function Unix_timestamp(t) {
-    var date = new Date(t * 1000);
-    var year = date.getFullYear();
-    var month = '0' + (date.getMonth() + 1);
-    var day = '0' + date.getDate();
-    var hour = '0' + date.getHours();
-    var minute = '0' + date.getMinutes();
-    var second = '0' + date.getSeconds();
-    return (
-      year +
-      '-' +
-      month.substr(-2) +
-      '-' +
-      day.substr(-2) +
-      ' ' +
-      hour.substr(-2) +
-      ':' +
-      minute.substr(-2) +
-      ':' +
-      second.substr(-2)
-    );
-  }
+  }, [onClose]);
 
   return createPortal(
     <Style.Background
       ref={outModal}
-      onClick={e => {
-        if (outModal.current === e.target) {
-          onClose();
-        }
-      }}
+      onClick={e => outModal.current === e.target && onClose()}
     >
       <Style.Content>
-        {images ? (
-          <Carousel
-            title={detail.title}
-            marketBase={marketBase}
-            images={images}
-          />
-        ) : null}
+        {images.length > 0 && <Carousel title={detail.title} images={images} />}
         <Style.Main>
           <Style.TitleLinkWrapper>
             <Style.Title>{detail.title}</Style.Title>
-            <Style.HyperLink
-              href={
-                detail.market === 'Daangn'
-                  ? `https://www.daangn.com/articles/${detail.pid}`
-                  : `https://m.bunjang.co.kr/products/${detail.pid}`
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              매물 정보 바로가기
-            </Style.HyperLink>
+            {url ? (
+              <Style.HyperLink
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {MARKET_LABEL[detail.market] || detail.market}에서 보기
+              </Style.HyperLink>
+            ) : (
+              <span>{MARKET_LABEL[detail.market] || detail.market}</span>
+            )}
           </Style.TitleLinkWrapper>
           <Style.InfoWrapper>
-            <Style.Price>{detail.price.toLocaleString('ko-KR')}원</Style.Price>
-            <Style.UploadDate>{Unix_timestamp(detail.date)}</Style.UploadDate>
+            <Style.Price>{formatPrice(detail.price)}</Style.Price>
+            <Style.UploadDate>{formatTimestamp(detail.date)}</Style.UploadDate>
             <Style.Region>{detail.region}</Style.Region>
           </Style.InfoWrapper>
-          <Style.Desc>{`${detail.desc}`}</Style.Desc>
+          <Style.Desc>{detail.desc}</Style.Desc>
         </Style.Main>
-        <Style.CloseBtn>
+        <Style.CloseBtn aria-label="닫기">
           <CloseIcon
             fontSize="large"
             sx={{ color: 'white' }}

@@ -1,76 +1,8 @@
-version: "3.7"
+# 배포용 오버라이드: docker compose -f docker-compose.yaml -f docker-compose-prod.yaml up --build -d
+# 80 포트로 서비스하고, ES 포트는 외부에 열지 않는다.
 services:
-    api:
-        build:
-            context: .
-            dockerfile: Dockerfile.api
-        container_name: capstone-api
-        depends_on:
-            - db
-        environment:
-            - TZ=Asia/Seoul
-        volumes:
-            - ./backend:/app
-            - ./image:/app/crawler/image
-        networks:
-            - elastic
-
-    db:
-        image: mariadb:10.6.2
-        container_name: capstone-db
-        expose:
-            - "3306"
-        environment:
-            # MYSQL_DATABASE: server
-            MYSQL_ROOT_PASSWORD: backstart
-            TZ: Asia/Seoul
-            MYSQL_INITDB_SKIP_TZINFO: 1
-        volumes:
-            - ./database/data:/var/lib/mysql
-        networks:
-            - elastic
-
-    nginx:
-        container_name: capstone-nginx
-        image: nginx:stable-alpine
-        restart: always
-        ports:
-            - 80:80
-            - 443:443
-        environment:
-            - TZ=Asia/Seoul
-        volumes:
-            - ./frontend/build:/usr/share/nginx/html
-            - ./proxy/nginx/conf.d:/etc/nginx/conf.d
-            - ./proxy/nginx/log:/var/log/nginx/default
-            - ./proxy/certbot/conf:/etc/letsencrypt
-            - ./proxy/certbot/www:/var/www/certbot
-            - type: bind
-              source: ./proxy/nginx/nginx.conf
-              target: /etc/nginx/nginx.conf
-        networks:
-            - elastic
-
-    elasticsearch:
-        build:
-            context: .
-            dockerfile: Dockerfile.es
-        container_name: elasticsearch
-        ports:
-            - "9200:9200"
-            - "9300:9300"
-        environment:
-            - discovery.type=single-node
-            - TZ=Asia/Seoul
-        volumes:
-            - ./data:/usr/share/elasticsearch/data
-        ulimits:
-            memlock:
-                soft: -1
-                hard: -1
-        networks:
-            - elastic
-
-networks:
-    elastic:
-        driver: bridge
+  web:
+    ports: !override
+      - "80:80"
+  elasticsearch:
+    ports: !reset []

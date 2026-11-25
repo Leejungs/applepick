@@ -1,2 +1,2 @@
-FROM elasticsearch:7.17.1
-RUN bin/elasticsearch-plugin install analysis-nori
+FROM elasticsearch:8.17.0
+RUN bin/elasticsearch-plugin install --batch analysis-nori
