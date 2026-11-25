@@ -18,18 +18,24 @@ def _build():
         detail = traceback.format_exc()
         logging.error("앱 시작 실패:\n%s", detail)
 
-        from flask import Flask
+        import json
+        import sys
 
-        fallback = Flask(__name__)
-
-        @fallback.route("/", defaults={"path": ""})
-        @fallback.route("/<path:path>")
-        def startup_failed(path):
-            return {
+        body = json.dumps(
+            {
                 "error": "Startup Failed",
                 "message": f"{type(e).__name__}: {e}",
+                "python": sys.version,
+                "sys_path": sys.path[:6],
                 "trace": detail.strip().splitlines()[-12:],
-            }, 500
+            },
+            ensure_ascii=False,
+        ).encode("utf-8")
+
+        # Flask 가 없을 수도 있으므로 순수 WSGI 함수로 응답한다
+        def fallback(environ, start_response):
+            start_response("500 Internal Server Error", [("Content-Type", "application/json; charset=utf-8")])
+            return [body]
 
         return fallback
 
