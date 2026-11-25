@@ -4,9 +4,14 @@
 로컬에서 직접 실행할 때를 위해 기본값은 localhost 기준으로 잡아 두었다.
 """
 import os
+import tempfile
 from pathlib import Path
 
 BACKEND_DIR = Path(__file__).resolve().parent
+
+# Vercel 같은 서버리스 환경: 코드 폴더는 읽기 전용이고 임시 폴더(/tmp)만 쓸 수 있다
+SERVERLESS = bool(os.environ.get("VERCEL"))
+DATA_DIR = Path(tempfile.gettempdir()) / "applepick" if SERVERLESS else BACKEND_DIR / "demo_data"
 
 
 def _load_dotenv():
@@ -38,15 +43,16 @@ ES_HOST = env("ES_HOST", "http://127.0.0.1:9200")
 ES_INDEX = env("ES_INDEX", "products")
 
 # 검색 저장소: auto(ES 가 있으면 ES, 없으면 데모 파일) | elasticsearch | memory
-SEARCH_BACKEND = env("SEARCH_BACKEND", "auto")
-DEMO_DATA_FILE = Path(env("DEMO_DATA_FILE", str(BACKEND_DIR / "demo_data" / "listings.json")))
+SEARCH_BACKEND = env("SEARCH_BACKEND", "memory" if SERVERLESS else "auto")
+DEMO_DATA_FILE = Path(env("DEMO_DATA_FILE", str(DATA_DIR / "listings.json")))
 
 # --- DB (알림, 인기 검색어) ---
 # 지정하지 않으면 SQLite 파일 사용 (도커에서는 MariaDB 주소가 주입됨)
-DATABASE_URL = env("DATABASE_URL", f"sqlite:///{(BACKEND_DIR / 'demo_data' / 'app.db').as_posix()}")
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+DATABASE_URL = env("DATABASE_URL", f"sqlite:///{(DATA_DIR / 'app.db').as_posix()}")
 
 # --- 크롤러 ---
-IMAGE_DIR = Path(env("IMAGE_DIR", str(BACKEND_DIR / "crawler" / "image")))
+IMAGE_DIR = Path(env("IMAGE_DIR", str((DATA_DIR if SERVERLESS else BACKEND_DIR / "crawler") / "image")))
 # 크롤러가 알림 목록을 조회할 API 주소
 API_BASE_URL = env("API_BASE_URL", "http://localhost:50000")
 CRAWL_SOURCES = [s.strip() for s in env("CRAWL_SOURCES", "bunjang").split(",") if s.strip()]

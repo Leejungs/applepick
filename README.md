@@ -1,8 +1,15 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/E--3axVr)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=7073047&assignment_repo_type=AssignmentRepo)
-[Open in Visual Studio Code](https://classroom.github.com/online_ide?assignment_repo_id=7073047&assignment_repo_type=AssignmentRepo)
+# 🍎 애플픽 ApplePick
 
-# 애풀 중고물품 조회 및 가격 비교 서비스
+**흩어진 중고 애플 매물, 한 번에 찾고 AI에게 묻다**
+
+중고 마켓 통합 검색 · 시세 분석 · AI 거래 도우미 (LangGraph + LangChain + OpenAI)
+
+- 빠른 실행: Windows 에서 `demo.bat` 더블클릭 → `.env` 에 `OPENAI_API_KEY` 입력 → 다시 실행
+- 발표 자료: [docs/애플픽_발표자료.pdf](docs/애플픽_발표자료.pdf) · 발표 대본: [docs/발표대본.md](docs/발표대본.md)
+- 배포: Vercel (아래 [Vercel 배포](#vercel-배포) 참고)
+
+> 2022년 캡스톤 프로젝트(애풀 중고물품 조회 및 가격 비교 서비스)를 2026년 기준으로 업데이트하고 AI 어시스턴트를 더한 버전입니다.
+
 
 ## 1. 프로젝트 소개
 
@@ -181,6 +188,20 @@ flowchart LR
 - 중고 아이폰 살 때 꼭 확인해야 할 것 알려줘
 - 아이폰 17 출시 가격 찾아보고 지금 중고 시세랑 비교해줘
 - 맥북 에어 시세 어때? 떨어지면 알려줘, 이메일은 me@example.com 이고 80만원 이하면 돼
+
+---
+
+## Vercel 배포
+
+`vercel.json` 에 프론트엔드(Vite)와 백엔드(Flask)를 하나의 프로젝트로 배포하는 설정(Services)이 들어 있습니다.
+
+1. https://vercel.com/new 에서 이 GitHub 저장소를 Import
+2. **Environment Variables** 에 `OPENAI_API_KEY` 추가 (필요하면 `AI_MODEL`, `AI_EFFORT`)
+3. Deploy → `https://<프로젝트>.vercel.app` 접속
+
+Vercel 에서의 차이점 (서버리스 환경)
+- 검색은 데모 저장소를 쓰고, 첫 요청 때 **샘플 매물**이 자동 생성됩니다. 실제 번개장터 매물 수집(크롤러)은 로컬/도커에서 실행합니다.
+- 데이터는 `/tmp` 에 저장되어 서버 인스턴스가 바뀌면 초기화됩니다 (알림·인기 검색어 포함). 시연·공유용으로 쓰고, 지속 운영은 Docker 배포를 권장합니다.
 
 ---
 
