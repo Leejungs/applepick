@@ -41,6 +41,9 @@ def create_app(test_config=None):
 
     db.init_app(app)
 
+    if config.SERVERLESS:
+        app.wsgi_app = _decode_path(app.wsgi_app)
+
     @app.errorhandler(HTTPException)
     def json_error(e):
         # webargs 검증 실패(422)는 필드별 메시지를 함께 돌려준다
@@ -76,6 +79,19 @@ def create_app(test_config=None):
         _create_tables_with_retry()
 
     return app
+
+
+def _decode_path(wsgi_app):
+    """Vercel 은 PATH_INFO 를 퍼센트 인코딩된 그대로('iPhone%2015%20Pro') 넘기므로 WSGI 규격대로 풀어 준다."""
+    from urllib.parse import unquote_to_bytes
+
+    def middleware(environ, start_response):
+        path = environ.get("PATH_INFO", "")
+        if "%" in path:
+            environ["PATH_INFO"] = unquote_to_bytes(path).decode("latin-1")
+        return wsgi_app(environ, start_response)
+
+    return middleware
 
 
 def _create_tables_with_retry(attempts=10, delay=3):
