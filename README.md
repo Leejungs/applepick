@@ -23,47 +23,13 @@ The purpose of this project is to provide a more convenient user experience by s
 
 ---
 
-## 3. 포스터
-
-![다운로드](https://user-images.githubusercontent.com/26023759/170633046-2f6d6ff1-4e58-4022-8e9b-6b48156bffa5.png)
-
----
-
-## 4. 시연 영상
+## 3. 시연 영상
 
 [보러가기](https://www.youtube.com/watch?v=_poqCcyFmUc&feature=emb_title)
 
 ---
 
-## 5. 팀 소개
-
-**이준석(팀장)**
-
-```
-👨🏻‍💻****1680
-📧lgh009833@kookmin.ac.kr
-🔨Frontend
-```
-
-**이정우**
-
-```
-👨🏻‍💻****1676
-📧lmwljw98@kookmin.ac.kr
-🔨Backend
-```
-
-**임준혁**
-
-```
-👨🏻‍💻****1689
-📧onejajae@kookmin.ac.kr
-🔨Crawling
-```
-
----
-
-## 6. 사용법 (2026 업데이트)
+## 4. 사용법 (2026 업데이트)
 
 > 2022년 버전에서 스택을 최신화했습니다. Python 3.12 / Flask 3 / Elasticsearch 8.17 / MariaDB 11.4 / Vite + React 18
 
@@ -142,7 +108,7 @@ AI 기능 외에는 외부 API 키가 필요 없습니다. (2022년 버전의 Ka
 
 ---
 
-## 6-1. AI 어시스턴트 (2026 추가)
+## 5. AI 어시스턴트 (2026 추가)
 
 `.env` 에 **`OPENAI_API_KEY` 하나만** 넣으면 동작합니다. (LLM 과 인터넷 검색 모두 이 키로 처리, 기본 모델 `gpt-5.4-mini`)
 화면: 상단 메뉴 **AI 어시스턴트** 또는 우측 하단 **AI에게 물어보기** 버튼.
@@ -205,16 +171,4 @@ Vercel 에서의 차이점 (서버리스 환경)
 
 ---
 
-## 7. 문서
 
-- 중간보고서
-
-  - [바로가기](https://github.com/kookmin-sw/capstone-2022-14/blob/master/docs/팀14-중간보고서.pdf)
-
-- 중간발표자료
-
-  - [바로가기](https://github.com/kookmin-sw/capstone-2022-14/blob/master/docs/팀14-중간발표자료.pdf)
-
-- 최종발표자료
-
-  - [바로가기](https://github.com/kookmin-sw/capstone-2022-14/blob/master/docs/팀14-최종발표자료.pdf)
